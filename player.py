@@ -17,4 +17,16 @@ message_connection = {
 }
 s.send(json.dumps(message_connection).encode()) #!!!!!! json.dumps().encode(), il faut pas oublié encode()
 message = s.recv(1024)
-print(message.decode())
+message_receive =json.loads(message.decode())
+if message_receive["response"] == "ok":
+  s_serveur = socket.socket()
+  s_serveur.bind(('0.0.0.0',port_perso))
+  s_serveur.listen()
+  client, address = s_serveur.accept()
+  with client:
+    message = client.recv(1024)
+    print(message.decode())
+
+
+#python3 server.py quarto
+#python3 player.py
