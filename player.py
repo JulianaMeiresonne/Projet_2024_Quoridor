@@ -24,9 +24,11 @@ if message_receive["response"] == "ok":
   s_serveur.listen()
   client, address = s_serveur.accept()
   with client:
-    message = client.recv(1024)
-    print(message.decode())
-
+    message_ping = client.recv(1024)
+    message_receive_ping =json.loads(message_ping.decode())
+    if message_receive_ping["request"] == "ping":
+      message_pong = {"response": "pong"}
+      s.send(json.dumps(message_pong).encode())
 
 #python3 server.py quarto
 #python3 player.py
