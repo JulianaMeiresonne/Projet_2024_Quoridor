@@ -1,0 +1,37 @@
+import socket
+import json
+
+port_perso = 6000
+port_serveur_global = 3000 # connection au serveur du prof
+IP_serveur_global = "localhost" # adress IP du serveur du prof
+
+#Inscription au serveur
+s_inscription = socket.socket() #TCP
+s_inscription.connect((IP_serveur_global,port_serveur_global))
+message_connection = {
+  "request": "subscribe",
+  "port": port_perso,
+  "name": "player_adversary",
+  "matricules": ["23000", "23001"]
+}
+s_inscription.send(json.dumps(message_connection).encode()) #!!!!!! json.dumps().encode(), il faut pas oublié encode()
+message = s_inscription.recv(1024)
+message_receive =json.loads(message.decode())
+print(message)
+
+
+#Communication serveur (envoyer et recevoir information)
+s_serveur = socket.socket()
+s_serveur.bind(('0.0.0.0',port_perso))
+while message_receive["response"] == "ok":
+  s_serveur.listen()
+  client, address = s_serveur.accept() #client : la méthode accept(), Renvoie un tuple avec un socket client et l’adresse de ce dernier, ce socket client est celui qui doit être utiliser pour communiquer (envoyer et recevoir info) car il reste constament connecter au client donc pas de [Errno 32] Broken pipe
+  with client:
+    message_ping = client.recv(1024)
+    message_receive_ping =json.loads(message_ping.decode())
+    if message_receive_ping["request"] == "ping":
+      message_pong = {"response": "pong"}
+      client.send(json.dumps(message_pong).encode())
+
+# python3 server.py quarto
+# python3 player_adversary.py
