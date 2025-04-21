@@ -1,34 +1,37 @@
 import socket
-import threading
-import time
 import json
 
 port_perso = 8888
 port_serveur_prof = 3000
 Ip_prof = "localhost"
 
-s = socket.socket() #TCP
-s.connect(('localhost',port_serveur_prof))
+#Inscription au serveur
+s_inscription = socket.socket() #TCP
+s_inscription.connect(('localhost',port_serveur_prof))
 message_connection = {
   "request": "subscribe",
   "port": 8888,
-  "name": "fun_name_for_the_client",
-  "matricules": ["12345", "67890"]
+  "name": "Vénéré_maîtresse",
+  "matricules": ["23342", "23268"]
 }
-s.send(json.dumps(message_connection).encode()) #!!!!!! json.dumps().encode(), il faut pas oublié encode()
-message = s.recv(1024)
+s_inscription.send(json.dumps(message_connection).encode()) #!!!!!! json.dumps().encode(), il faut pas oublié encode()
+message = s_inscription.recv(1024)
 message_receive =json.loads(message.decode())
-if message_receive["response"] == "ok":
-  s_serveur = socket.socket()
-  s_serveur.bind(('0.0.0.0',port_perso))
+print(message)
+
+
+#Communication serveur (envoyer et recevoir information)
+s_serveur = socket.socket()
+s_serveur.bind(('0.0.0.0',port_perso))
+while message_receive["response"] == "ok":
   s_serveur.listen()
-  client, address = s_serveur.accept()
+  client, address = s_serveur.accept() #client : la méthode accept(), Renvoie un tuple avec un socket client et l’adresse de ce dernier, ce socket client est celui qui doit être utiliser pour communiquer (envoyer et recevoir info) car il reste constament connecter au client donc pas de [Errno 32] Broken pipe
   with client:
     message_ping = client.recv(1024)
     message_receive_ping =json.loads(message_ping.decode())
     if message_receive_ping["request"] == "ping":
       message_pong = {"response": "pong"}
-      s.send(json.dumps(message_pong).encode())
+      client.send(json.dumps(message_pong).encode())
 
-#python3 server.py quarto
-#python3 player.py
+# python3 server.py quarto
+# python3 player.py
