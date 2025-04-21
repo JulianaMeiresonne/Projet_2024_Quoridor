@@ -2,15 +2,15 @@ import socket
 import json
 
 port_perso = 8888
-port_serveur_prof = 3000
-Ip_prof = "localhost"
+port_serveur_global = 3000 # connection au serveur du prof
+IP_serveur_global = "localhost" # adress IP du serveur du prof
 
 #Inscription au serveur
 s_inscription = socket.socket() #TCP
-s_inscription.connect(('localhost',port_serveur_prof))
+s_inscription.connect((IP_serveur_global,port_serveur_global))
 message_connection = {
   "request": "subscribe",
-  "port": 8888,
+  "port": port_perso,
   "name": "Vénéré_maîtresse",
   "matricules": ["23342", "23268"]
 }
