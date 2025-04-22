@@ -1,9 +1,3 @@
-if __name__ == "__main__":
-    import os
-    import sys
-
-    sys.path.append(os.getcwd())
-
 import copy
 import random
 
@@ -48,7 +42,7 @@ def isFull(board):
             return False
     return True
 
-
+chosen_pieces =[]
 def Quarto(players):
     if len(players) != 2:
         print("Tic Tac Toe must be played by 2 players")
@@ -65,6 +59,7 @@ def Quarto(players):
             for weight in ["E", "F"]:
                 for shape in ["C", "P"]:
                     pieces.add(frozenset({size, color, weight, shape}))
+                    chosen_pieces.append(f"{size}{color}{weight}{shape}") # generer la liste de tous les moves
 
     state = {"players": players, "current": 0, "board": [None] * 16, "piece": None}
 
@@ -145,32 +140,20 @@ if __name__ == "__main__":
 
     def input_move(player):
         print(f"player {player}")
-        pos = random.choice("0,1,2,3,4,5,6,7,8,9,10,11,12,13,14")
-        if len(pos) == 0:
-            pos = None
-        else:
-            pos = int(pos)
-        piece = random.choice(['BLEP','SLFC','BDEC','BLFP','BLEC'])
+        pos = random.choice([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15])
+        piece = random.choice(chosen_pieces)
         if len(piece) == 0:
             piece = None
         return {"pos": pos, "piece": piece}
 
     state, next = Quarto(["LUR", "FKY"])
-    try:
-        while True:
-            show(state["board"])
-            print(f"Piece: {state['piece']}")
-            move = input_move(state["players"][state["current"]])
-            try:
+    stop = 0
+    while stop< 5:
+        stop += 1
+        show(state["board"])
+        print(f"Piece: {state['piece']}")
+        move = input_move(state["players"][state["current"]])
+        try:
                 state = next(state, move)
-            except ValueError as e:
+        except ValueError as e:
                 print(e)
-    except ValueError as e:
-        #show(e.state["board"])
-        #print("{} win the game".format(state["players"][e.winner]))
-        print("game over")
-
-'''
-{frozenset({'B', 'D', 'P', 'E'}), frozenset({'B', 'L', 'F', 'C'}), frozenset({'S', 'D', 'P', 'E'}), frozenset({'B', 'D', 'C', 'E'}), frozenset({'S', 'L', 'F', 'P'}), frozenset({'S', 'D', 'C', 'E'}), frozenset({'S', 'F', 'D', 'P'}), frozenset({'B', 'L', 'C', 'E'}), frozenset({'B', 'L', 'F', 'P'}), frozenset({'B', 'F', 'D', 'P'}), frozenset({'B', 'L', 'P', 'E'}), frozenset({'S', 'L', 'C', 'E'}), frozenset({'S', 'F', 'D', 'C'}), frozenset({'S', 'L', 'F', 'C'}), frozenset({'S', 'L', 'P', 'E'}), frozenset({'B', 'F', 'D', 'C'})}
-Piece ',' not available
-'''
