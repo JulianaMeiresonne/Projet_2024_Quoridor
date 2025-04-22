@@ -150,7 +150,7 @@ if __name__ == "__main__":
             pos = None
         else:
             pos = int(pos)
-        piece = random.choice("BLEP,SLFC,BDEC,BLFP,BLEC")
+        piece = random.choice(['BLEP','SLFC','BDEC','BLFP','BLEC'])
         if len(piece) == 0:
             piece = None
         return {"pos": pos, "piece": piece}
