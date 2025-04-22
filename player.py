@@ -1,5 +1,7 @@
 import socket
 import json
+import copy
+import random
 
 port_perso = 8888
 port_serveur_global = 3000 # connection au serveur du prof
@@ -33,16 +35,6 @@ while message_receive["response"] == "ok":
       message_pong = {"response": "pong"}
       client.send(json.dumps(message_pong).encode())
     elif message_receive_ping["request"] == "play":
-      if __name__ == "__main__":
-        import os
-        import sys
-
-        sys.path.append(os.getcwd())
-
-      import copy
-      import random
-
-
       def same(L):
         if None in L:
           return False
@@ -171,16 +163,11 @@ while message_receive["response"] == "ok":
 
           return state, next
 
-
-      Game = Quarto
-
-      if __name__ == "__main__":
-
-          def show(board):
+      def show(board):
               for i in range(4):
                   print(getLine(board, i))
 
-          def input_move(player):
+      def input_move(player):
               print(f"player {player}")
               pos = random.choice([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14])
               piece = random.choice(chosen_pieces)
@@ -188,20 +175,20 @@ while message_receive["response"] == "ok":
                   piece = None
               return {"pos": pos, "piece": piece}
 
-          state, next = Quarto([message_receive_ping["state"]["players"][0],message_receive_ping["state"]["players"][1]])
+      state, next = Quarto([message_receive_ping["state"]["players"][0],message_receive_ping["state"]["players"][1]])
 
-          show(state["board"])
-          print(f"Piece: {state['piece']}")
-          move = input_move(state["players"][state["current"]])
-          move_sent = {
+      show(state["board"])
+      print(f"Piece: {state['piece']}")
+      move = input_move(state["players"][state["current"]])
+      move_sent = {
                                 "response": "move",
                                 "move": move,
                                 "message": "Fun message"
                               }
-          client.send(json.dumps(move_sent).encode())
-          try:
+      client.send(json.dumps(move_sent).encode())
+      try:
                       state = next(state, move)
-          except ValueError as e:
+      except ValueError as e:
                       print(e)
 
 # python3 server.py quarto
