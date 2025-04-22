@@ -36,6 +36,7 @@ while message_receive["response"] == "ok":
       client.send(json.dumps(message_pong).encode())
     elif message_receive_ping["request"] == "play":
       chosen_pieces =[]
+      all_position =[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14] 
       def generated_pieces(): # génèrer la liste de tous les moves
           # Big/Small: B/S
           # Dark/Light: D/L
@@ -53,7 +54,18 @@ while message_receive["response"] == "ok":
           #   "piece": <piece_str>,  # piece for the opponent example "BDEC"
           # }
       def input_move(): #choisit les move de manière random
-              pos = random.choice([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14])
+              index = 0
+              for n in message_receive_ping["state"]["board"]:
+                  if n != None:
+                      chosen_pieces.remove(n)
+                      if index in all_position: 
+                          all_position.remove(index)
+                  index +=1
+              pos = random.choice(all_position)
+              #if message_receive_ping["state"]["piece"] in chosen_pieces: pour éviter les bad move quand on choisit la piece
+                #chosen_pieces.remove(message_receive_ping["state"]["piece"])
+
+                #This is a Bad Move. Piece 'SLFP' not available => car existe pas ou dejà choisit ???
               piece = random.choice(chosen_pieces)
               if len(piece) == 0:
                   piece = None

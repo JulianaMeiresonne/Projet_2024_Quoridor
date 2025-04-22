@@ -35,7 +35,8 @@ while message_receive["response"] == "ok":
       client.send(json.dumps(message_pong).encode())
     elif message_receive_ping["request"] == "play":
       chosen_pieces =[]
-      def generated_pieces():
+      all_position =[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14] 
+      def generated_pieces(): # génèrer la liste de tous les moves
           # Big/Small: B/S
           # Dark/Light: D/L
           # Empty/Full: E/F
@@ -44,15 +45,24 @@ while message_receive["response"] == "ok":
               for color in ["D", "L"]:
                   for weight in ["E", "F"]:
                       for shape in ["C", "P"]:
-                          chosen_pieces.append(f"{size}{color}{weight}{shape}") # generer la liste de tous les moves
+                          chosen_pieces.append(f"{size}{color}{weight}{shape}") 
 
           # Move
           # {
           #   "pos": <index>,        # between 0 and 15 or null if first move
           #   "piece": <piece_str>,  # piece for the opponent example "BDEC"
           # }
-      def input_move():
-              pos = random.choice([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14])
+      def input_move(): #choisit les move de manière random
+              index = 0
+              for n in message_receive_ping["state"]["board"]:
+                  if n != None:
+                      chosen_pieces.remove(n)
+                      if index in all_position: 
+                          all_position.remove(index)
+                  index +=1
+              pos = random.choice(all_position)
+              #if message_receive_ping["state"]["piece"] in chosen_pieces: pour éviter les bad move quand on choisit la piece
+                #chosen_pieces.remove(message_receive_ping["state"]["piece"])
               piece = random.choice(chosen_pieces)
               if len(piece) == 0:
                   piece = None
