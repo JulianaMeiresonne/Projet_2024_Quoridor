@@ -3,7 +3,7 @@ import json
 
 port_perso = 8888
 port_serveur_global = 3000 # connection au serveur du prof
-IP_serveur_global = "172.17.10.133" # adress IP du serveur du prof
+IP_serveur_global = "localhost" # adress IP du serveur du prof
 
 #Inscription au serveur
 s_inscription = socket.socket() #TCP
@@ -83,7 +83,7 @@ while message_receive["response"] == "ok":
                   return False
           return True
 
-
+      chosen_pieces =[]
       def Quarto(players):
           if len(players) != 2:
               print("Tic Tac Toe must be played by 2 players")
@@ -100,6 +100,8 @@ while message_receive["response"] == "ok":
                   for weight in ["E", "F"]:
                       for shape in ["C", "P"]:
                           pieces.add(frozenset({size, color, weight, shape}))
+                          chosen_pieces.append(f"{size}{color}{weight}{shape}") # generer la liste de tous les moves
+
 
           state = {"players": players, "current": 0, "board": [None] * 16, "piece": None}
 
@@ -180,37 +182,27 @@ while message_receive["response"] == "ok":
 
           def input_move(player):
               print(f"player {player}")
-              #pos = input("Pos (enter for `null`): ")
-              pos = random.choice("0,1,2,3,4,5,6,7,8,9,10,11,12,13,14")
-              if len(pos) == 0:
-                  pos = None
-              else:
-                  pos = int(pos)
-              piece = random.choice(['BLEP','SLFC','BDEC','BLFP','BLEC'])
+              pos = random.choice([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14])
+              piece = random.choice(chosen_pieces)
               if len(piece) == 0:
                   piece = None
               return {"pos": pos, "piece": piece}
 
           state, next = Quarto([message_receive_ping["state"]["players"][0],message_receive_ping["state"]["players"][1]])
-          try:
-              while True:
-                  show(state["board"])
-                  print(f"Piece: {state['piece']}")
-                  move = input_move(state["players"][state["current"]])
-                  move_sent = {
+
+          show(state["board"])
+          print(f"Piece: {state['piece']}")
+          move = input_move(state["players"][state["current"]])
+          move_sent = {
                                 "response": "move",
                                 "move": move,
                                 "message": "Fun message"
                               }
-                  client.send(json.dumps(move_sent).encode())
-                  try:
+          client.send(json.dumps(move_sent).encode())
+          try:
                       state = next(state, move)
-                  except ValueError as e:
-                      print(e)
           except ValueError as e:
-            #   show(e.state["board"])
-            #   print("{} win the game".format(state["players"][e.winner]))
-              print("game over")
+                      print(e)
 
 # python3 server.py quarto
 # python3 player.py
