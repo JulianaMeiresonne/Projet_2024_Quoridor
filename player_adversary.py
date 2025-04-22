@@ -3,7 +3,7 @@ import json
 
 port_perso = 6000
 port_serveur_global = 3000 # connection au serveur du prof
-IP_serveur_global = "localhost" # adress IP du serveur du prof
+IP_serveur_global = "localhost" # adress IP du serveur du prof, 172.17.10.133.3000 avec 3000 = port donc il faut pas le mettre car déja mit
 
 #Inscription au serveur
 s_inscription = socket.socket() #TCP
