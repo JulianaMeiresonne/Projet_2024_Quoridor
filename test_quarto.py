@@ -2,5 +2,4 @@ import pytest
 import quarto
 
 def test_random():
-    # À compléter...
-    pass
+    quarto.input_move() # !! attentions au if __name__ == "__main__":
