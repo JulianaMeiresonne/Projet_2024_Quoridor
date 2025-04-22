@@ -186,24 +186,31 @@ while message_receive["response"] == "ok":
                   pos = None
               else:
                   pos = int(pos)
-              piece = random.choice("BLEP,SLFC,BDEC,BLFP,BLEC")
+              piece = random.choice(['BLEP','SLFC','BDEC','BLFP','BLEC'])
               if len(piece) == 0:
                   piece = None
               return {"pos": pos, "piece": piece}
 
-          state, next = Quarto(message_receive_ping["state"]["players"][0],message_receive_ping["state"]["players"][1])
+          state, next = Quarto([message_receive_ping["state"]["players"][0],message_receive_ping["state"]["players"][1]])
           try:
               while True:
                   show(state["board"])
                   print(f"Piece: {state['piece']}")
                   move = input_move(state["players"][state["current"]])
+                  move_sent = {
+                                "response": "move",
+                                "move": move,
+                                "message": "Fun message"
+                              }
+                  client.send(json.dumps(move_sent).encode())
                   try:
                       state = next(state, move)
                   except ValueError as e:
                       print(e)
           except ValueError as e:
-              show(e.state["board"])
-              print("{} win the game".format(state["players"][e.winner]))
+            #   show(e.state["board"])
+            #   print("{} win the game".format(state["players"][e.winner]))
+              print("game over")
 
 # python3 server.py quarto
 # python3 player.py
