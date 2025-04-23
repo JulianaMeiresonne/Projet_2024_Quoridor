@@ -62,8 +62,8 @@ while message_receive["response"] == "ok":
                           all_position.remove(index)
                   index +=1
               pos = random.choice(all_position)
-              #if message_receive_ping["state"]["piece"] in chosen_pieces: pour éviter les bad move quand on choisit la piece
-                #chosen_pieces.remove(message_receive_ping["state"]["piece"])
+              if message_receive_ping["state"]["piece"] in chosen_pieces: #pour éviter les bad move quand on choisit la piece
+                chosen_pieces.remove(message_receive_ping["state"]["piece"])
 
                 #This is a Bad Move. Piece 'SLFP' not available => car existe pas ou dejà choisit ???
               piece = random.choice(chosen_pieces)
