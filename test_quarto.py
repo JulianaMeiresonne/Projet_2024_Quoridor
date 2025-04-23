@@ -1,12 +1,7 @@
 import pytest
 import quarto
 
-def test_Quarto():
-    with pytest.raises(ValueError):                     #Nous permet de vérifier si on a bien mis les ValueError pour les conditions le nécessitant
-        if len(['player1', 'player2', 'player3']) > 2:  # situation dans laquelle on a plus de 2 joueurs
-            raise ValueError
-        if len(['player1']) <2:  # situation dans laquelle on a moins de deux joueurs
-            raise ValueError
+
 state={"board": {                                                          #on définit un plateau avec certaine pièce placée
             (0, 0): "piece1",(0, 1): None,(0,2):None,(0,3):None,
             (1, 1): None, (1, 1): None,(1,2):None,(1,3):None,
