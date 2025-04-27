@@ -11,7 +11,17 @@ Vous devez réaliser une intelligence artificielle pour le jeu Quoridor. Votre I
 
 
 
-## Bibliothèques utilisées:
+## Bibliothèques/modules utilisées:
+
+-socket
+
+-json
+
+-copy
+
+-random
+
+-pytest
 
 
 
