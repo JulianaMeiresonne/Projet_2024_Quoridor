@@ -36,7 +36,7 @@ while message_receive["response"] == "ok":
       client.send(json.dumps(message_pong).encode())
     elif message_receive_ping["request"] == "play":
       chosen_pieces =[]
-      all_position =[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14] 
+      all_position =list(range(len(message_receive_ping["state"]["board"]))) #range renvoie une object range donc il faut transformer en liste
       def generated_pieces(): # génèrer la liste de tous les moves
           # Big/Small: B/S
           # Dark/Light: D/L
