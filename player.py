@@ -10,6 +10,7 @@ all_position = []
 
 
 def generated_pieces(): # génèrer la liste de tous les moves
+          chosen_pieces.clear()
           # Big/Small: B/S
           # Dark/Light: D/L
           # Empty/Full: E/F
@@ -29,15 +30,22 @@ def input_move(game_board,piece): #choisit les move de manière random
           # }
               all_position =list(range(len(game_board))) #range renvoie une object range donc il faut transformer en liste
               index = 0
+              party_tracker = 0
               for n in game_board:
                   if n != None:
-                      chosen_pieces.remove(n)
+                      if n in chosen_pieces:
+                        chosen_pieces.remove(n)
                       if index in all_position: 
                           all_position.remove(index)
+                  else:
+                      party_tracker +=1
                   index +=1
+              if party_tracker == len(game_board):
+                  generated_pieces()
               pos = random.choice(all_position)
-              if piece in chosen_pieces: #pour éviter les bad move quand on choisit la piece
-                chosen_pieces.remove(piece)
+              if piece!= None :  #pour éviter les bad move quand on choisit la piece
+                if piece in chosen_pieces:
+                    chosen_pieces.remove(piece)
               piece = random.choice(chosen_pieces)
               if len(piece) == 0:
                   piece = None
@@ -71,7 +79,6 @@ while message_receive["response"] == "ok":
       message_pong = {"response": "pong"}
       client.send(json.dumps(message_pong).encode())
     elif message_receive_ping["request"] == "play": 
-      generated_pieces()
       move = input_move(message_receive_ping["state"]["board"],message_receive_ping["state"]["piece"])
       move_sent = { "response": "move","move": move,"message": "Fun message"}
       client.send(json.dumps(move_sent).encode())
