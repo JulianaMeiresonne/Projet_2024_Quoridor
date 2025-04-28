@@ -1,6 +1,5 @@
 import socket
 import json
-import copy
 import random
 
 port_perso = 8888
