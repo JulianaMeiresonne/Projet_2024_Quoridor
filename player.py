@@ -2,9 +2,16 @@ import socket
 import json
 import random
 
+#variable initiation
 port_perso = 8888
 port_serveur_global = 3000 # connection au serveur du prof
 IP_serveur_global = "localhost" # adress IP du serveur du prof
+name = "Vénéré_maîtresse"
+matricules = ["23342", "23268"]
+socket_inscription = socket.socket() #TCP
+socket_inscription.connect((IP_serveur_global,port_serveur_global))
+socket_serveur_local = socket.socket()
+socket_serveur_local.bind(('0.0.0.0',port_perso))
 chosen_pieces =[]
 all_position = []
 
@@ -53,25 +60,21 @@ def input_move(game_board,piece): #choisit les move de manière random
 
 
 #Inscription au serveur
-s_inscription = socket.socket() #TCP
-s_inscription.connect((IP_serveur_global,port_serveur_global))
 message_connection = {
   "request": "subscribe",
   "port": port_perso,
-  "name": "Vénéré_maîtresse",
-  "matricules": ["23342", "23268"]
+  "name": name,
+  "matricules": matricules
 }
-s_inscription.send(json.dumps(message_connection).encode()) #!!!!!! json.dumps().encode(), il faut pas oublié encode()
-message = s_inscription.recv(1024)
+socket_inscription.send(json.dumps(message_connection).encode()) #!!!!!! json.dumps().encode(), il faut pas oublié encode()
+message = socket_inscription.recv(1024)
 message_receive =json.loads(message.decode())
 
 
 #Communication serveur (envoyer et recevoir information)
-s_serveur = socket.socket()
-s_serveur.bind(('0.0.0.0',port_perso))
 while message_receive["response"] == "ok":
-  s_serveur.listen()
-  client, address = s_serveur.accept() #client : la méthode accept(), Renvoie un tuple avec un socket client et l’adresse de ce dernier, ce socket client est celui qui doit être utiliser pour communiquer (envoyer et recevoir info) car il reste constament connecter au client donc pas de [Errno 32] Broken pipe
+  socket_serveur_local.listen()
+  client, address = socket_serveur_local.accept() #client : la méthode accept(), Renvoie un tuple avec un socket client et l’adresse de ce dernier, ce socket client est celui qui doit être utiliser pour communiquer (envoyer et recevoir info) car il reste constament connecter au client donc pas de [Errno 32] Broken pipe
   with client:
     message_ping = client.recv(1024)
     message_receive_ping =json.loads(message_ping.decode())
