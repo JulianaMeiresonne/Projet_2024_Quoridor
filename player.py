@@ -59,32 +59,35 @@ def input_move(game_board,piece): #choisit les move de manière random
               return {"pos": pos, "piece": piece}
 
 
-#Inscription au serveur
-message_connection = {
-  "request": "subscribe",
-  "port": port_perso,
-  "name": name,
-  "matricules": matricules
-}
-socket_inscription.send(json.dumps(message_connection).encode()) #!!!!!! json.dumps().encode(), il faut pas oublié encode()
-message = socket_inscription.recv(1024)
-message_receive =json.loads(message.decode())
 
 
-#Communication serveur (envoyer et recevoir information)
-while message_receive["response"] == "ok":
-  socket_serveur_local.listen()
-  client, address = socket_serveur_local.accept() #client : la méthode accept(), Renvoie un tuple avec un socket client et l’adresse de ce dernier, ce socket client est celui qui doit être utiliser pour communiquer (envoyer et recevoir info) car il reste constament connecter au client donc pas de [Errno 32] Broken pipe
-  with client:
-    message_ping = client.recv(1024)
-    message_receive_ping =json.loads(message_ping.decode())
-    if message_receive_ping["request"] == "ping":
-      message_pong = {"response": "pong"}
-      client.send(json.dumps(message_pong).encode())
-    elif message_receive_ping["request"] == "play": 
-      move = input_move(message_receive_ping["state"]["board"],message_receive_ping["state"]["piece"])
-      move_sent = { "response": "move","move": move,"message": "Fun message"}
-      client.send(json.dumps(move_sent).encode())
+if __name__ == "__main__":
+  #Inscription au serveur
+  message_connection = {
+    "request": "subscribe",
+    "port": port_perso,
+    "name": name,
+    "matricules": matricules
+  }
+  socket_inscription.send(json.dumps(message_connection).encode()) #!!!!!! json.dumps().encode(), il faut pas oublié encode()
+  message = socket_inscription.recv(1024)
+  message_receive =json.loads(message.decode())
 
-# python3 server.py quarto
-# python3 player.py
+
+  #Communication serveur (envoyer et recevoir information)
+  while message_receive["response"] == "ok":
+    socket_serveur_local.listen()
+    client, address = socket_serveur_local.accept() #client : la méthode accept(), Renvoie un tuple avec un socket client et l’adresse de ce dernier, ce socket client est celui qui doit être utiliser pour communiquer (envoyer et recevoir info) car il reste constament connecter au client donc pas de [Errno 32] Broken pipe
+    with client:
+      message_ping = client.recv(1024)
+      message_receive_ping =json.loads(message_ping.decode())
+      if message_receive_ping["request"] == "ping":
+        message_pong = {"response": "pong"}
+        client.send(json.dumps(message_pong).encode())
+      elif message_receive_ping["request"] == "play": 
+        move = input_move(message_receive_ping["state"]["board"],message_receive_ping["state"]["piece"])
+        move_sent = { "response": "move","move": move,"message": "Fun message"}
+        client.send(json.dumps(move_sent).encode())
+
+  # python3 server.py quarto
+  # python3 player.py
