@@ -17,8 +17,6 @@ Vous devez réaliser une intelligence artificielle pour le jeu Quoridor. Votre I
 
 -json
 
--copy
-
 -random
 
 -pytest
