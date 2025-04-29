@@ -19,3 +19,4 @@ def test_position():
 def test_generated_pieces():                            #on test si on génère bien toutes les pièces
     player.generated_pieces()
     assert len(player.chosen_pieces)==16
+    assert len(player.chosen_pieces) == len(set(player.chosen_pieces))
