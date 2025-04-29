@@ -8,10 +8,6 @@ port_serveur_global = 3000 # connection au serveur du prof
 IP_serveur_global = "localhost" # adress IP du serveur du prof
 name = "player_adversary"
 matricules = ["23000", "23001"]
-socket_inscription = socket.socket() #TCP
-socket_inscription.connect((IP_serveur_global,port_serveur_global))
-socket_serveur_local = socket.socket()
-socket_serveur_local.bind(('0.0.0.0',port_perso))
 chosen_pieces =[]
 all_position = []
 
@@ -61,6 +57,10 @@ def input_move(game_board,piece): #choisit les move de manière random
 
 
 if __name__ == "__main__":
+  socket_inscription = socket.socket() #TCP
+  socket_inscription.connect((IP_serveur_global,port_serveur_global))
+  socket_serveur_local = socket.socket()
+  socket_serveur_local.bind(('0.0.0.0',port_perso))
 #Inscription au serveur
   message_connection = {
     "request": "subscribe",
