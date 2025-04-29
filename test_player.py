@@ -9,9 +9,13 @@ state={"board": {                                                          #on d
             }
         }
 pos=(0,0)                                                                   #on prends une position ayant déjà une pièce pour tester l'erreur
-def test_next():
+def test_position():
     with pytest.raises(ValueError):
         if "pos" not in [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]:
             raise ValueError
         if state["board"][pos] is not None:
             raise ValueError
+        
+def test_generated_pieces():                            #on test si on génère bien toutes les pièces
+    player.generated_pieces()
+    assert len(player.chosen_pieces)==16
