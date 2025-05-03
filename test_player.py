@@ -20,3 +20,8 @@ def test_generated_pieces():                            #on test si on génère 
     player.generated_pieces()
     assert len(player.chosen_pieces)==16
     assert len(player.chosen_pieces) == len(set(player.chosen_pieces))
+
+# def test_input_move():
+#     player.generated_pieces()
+#     if player.game_board==state["board"]:
+#         assert "BLEC" not in player.chosen_pieces
