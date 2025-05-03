@@ -26,25 +26,21 @@ def generated_pieces(): # génèrer la liste de tous les moves
 
 
 def input_move(game_board,piece): #choisit les move de manière random
+              generated_pieces()
               # Move
           # {
           #   "pos": <index>,        # between 0 and 15 or null if first move
           #   "piece": <piece_str>,  # piece for the opponent example "BDEC"
           # }
               all_position =list(range(len(game_board))) #range renvoie une object range donc il faut transformer en liste
-              index = 0 #permte de connaitre l'indice d'un object sur le plateau de jeux
-              party_tracker = 0 #permet de verifier si c'est une nouvelle party ou pas 
+              index = 0 #permte de connaitre l'indice d'un object sur le plateau de jeux 
               for n in game_board:
                   if n != None:
                       if n in chosen_pieces:
                         chosen_pieces.remove(n)
                       if index in all_position: 
                           all_position.remove(index)
-                  else:
-                      party_tracker +=1 #si party_tracker = 15 aloes c'est une nouvelle party car toutes les valeurs du plateau de jeux sont None
                   index +=1
-              if party_tracker == len(game_board): #si c'est une nouvelle party, on remplie le plateau de jeux
-                  generated_pieces()
               pos = random.choice(all_position)
               if piece!= None :  #pour éviter les bad moves causé par la piece choisit par notre adversaire
                 if piece in chosen_pieces:
@@ -91,3 +87,4 @@ if __name__ == "__main__":
 
   # python3 server.py quarto
   # python3 player.py
+  # python3 -m pip install -r requirements.txt
