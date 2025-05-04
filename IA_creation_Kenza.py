@@ -143,6 +143,15 @@ def Quarto_state(players):
         return newState
     return state, next
 
+def currentPlayer(state):                                   #permet de savoir qui joue
+    return state["players"][state["current"]]
+
+def apply(state, move):
+    player=currentPlayer(state)
+    res=list(state)
+    res[move]=player
+    return res
+
 if __name__ == "__main__":
   socket_inscription = socket.socket() #TCP
   socket_inscription.connect((IP_serveur_global,port_serveur_global))
