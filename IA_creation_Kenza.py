@@ -70,6 +70,12 @@ def utility(state, player):                                         #permet d'av
 		return 1
 	return -1
 
+# def moves(state):                                                   #va nous permettre de return tout les moves possibles à faire
+#     moves=[]                                                       #liste vide de move que l'on peut faire
+#     empty_case=[position in enumerate()]
+
+
+
 def random_move(game_board, piece):
 
     generated_pieces()
@@ -111,6 +117,27 @@ def timeit(fun):
                 return random_move()
             return res
     return wrapper
+
+def Quarto_state(players):
+    state = {"players": players, "current": 0, "board": [None] * 16, "piece": None}
+
+    def next(state, move):
+        newState = copy.deepcopy(state)
+
+        if state["piece"] is not None:
+            if "pos" not in move:
+                raise ValueError
+            try:
+                pos = int(move["pos"])
+                state["board"][pos]
+            except (ValueError, IndexError):
+                return ValueError
+            newState["board"][pos] = state["piece"]
+        piece = frozenset(move["piece"])
+        newState["piece"] = move["piece"]
+        newState["current"] = (state["current"] + 1) % 2
+        return newState
+    return state, next
 
 if __name__ == "__main__":
   socket_inscription = socket.socket() #TCP
