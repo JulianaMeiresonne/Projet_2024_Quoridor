@@ -2,6 +2,7 @@ import socket
 import json
 import random
 import copy
+import time
 
 #variables initiales
 port_perso = 8888
@@ -60,34 +61,56 @@ def winner(board):                                                  #définition
 def gameOver(state):                                                #cette fonction permet de dire à l'IA quand elle doit cesser de réfléchir ou de jouer
 	if winner(state) is not None:
 		return True
+    
+def utility(state, player):                                         #permet d'avoir un état de succés pour l'IA
+	theWinner = winner(state)
+	if theWinner is None:
+		return 0
+	if theWinner == player:
+		return 1
+	return -1
 
-def input_move(game_board,piece): #choisit les move de manière random
-              generated_pieces()
+def random_move(game_board, piece):
+
+    generated_pieces()
               # Move
           # {
           #   "pos": <index>,        # between 0 and 15 or null if first move
           #   "piece": <piece_str>,  # piece for the opponent example "BDEC"
           # }
-              all_position =list(range(len(game_board))) #range renvoie une object range donc il faut transformer en liste
-              index = 0 #permte de connaitre l'indice d'un object sur le plateau de jeux 
-              for n in game_board:
-                  if n != None:
-                      if n in chosen_pieces:
-                        chosen_pieces.remove(n)
-                      if index in all_position: 
-                          all_position.remove(index)
-                  index +=1
-              pos = random.choice(all_position)
-              if piece!= None :  #pour éviter les bad moves causé par la piece choisit par notre adversaire
-                if piece in chosen_pieces:
-                    chosen_pieces.remove(piece)
-              piece = random.choice(chosen_pieces)
-              if len(piece) == 0:
-                  piece = None
-              return {"pos": pos, "piece": piece}
+    all_position =list(range(len(game_board))) #range renvoie une object range donc il faut transformer en liste
+    index = 0 #permte de connaitre l'indice d'un object sur le plateau de jeux 
+    for n in game_board:
+        if n != None:
+            if n in chosen_pieces:
+                chosen_pieces.remove(n)
+            if index in all_position: 
+                all_position.remove(index)
+        index +=1
+    pos = random.choice(all_position)
+    if piece!= None :  #pour éviter les bad moves causé par la piece choisit par notre adversaire
+        if piece in chosen_pieces:
+            chosen_pieces.remove(piece)
+    piece = random.choice(chosen_pieces)
+    if len(piece) == 0:
+        piece = None
+    return {"pos": pos, "piece": piece}
 
-
-
+def timeit(fun):
+    def wrapper(*args, **kwargs):
+            start = time.time()  # Temps de début
+            res = None
+            time_spend = 0
+            limit_second=3
+            while time_spend<limit_second:
+                res = fun(*args, **kwargs)
+                time_spend=time.time()-start
+                if time_spend>=limit_second:
+                    res is None
+            if res is None:
+                return random_move()
+            return res
+    return wrapper
 
 if __name__ == "__main__":
   socket_inscription = socket.socket() #TCP
@@ -117,7 +140,7 @@ if __name__ == "__main__":
         message_pong = {"response": "pong"}
         client.send(json.dumps(message_pong).encode())
       elif message_receive_ping["request"] == "play": 
-        move = input_move(message_receive_ping["state"]["board"],message_receive_ping["state"]["piece"])
+        move = random_move(message_receive_ping["state"]["board"],message_receive_ping["state"]["piece"])
         move_sent = { "response": "move","move": move,"message": "Fun message"}
         client.send(json.dumps(move_sent).encode())
 
