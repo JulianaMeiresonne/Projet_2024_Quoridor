@@ -70,10 +70,14 @@ def utility(state, player):                                         #permet d'av
 		return 1
 	return -1
 
-# def moves(state):                                                   #va nous permettre de return tout les moves possibles à faire
-#     moves=[]                                                       #liste vide de move que l'on peut faire
-#     empty_case=[position in enumerate()]
-
+def moves(state):                                                                       #va nous permettre de return tout les moves possibles à faire
+    moves=[]                                                                            #liste vide de move que l'on peut faire
+    empty_case=[n for n,position in enumerate(state["board"]) if position is None]
+    pieces_to_use= [piece for piece in chosen_pieces if piece not in state["board"]]
+    for pos in empty_case:
+        for piece in pieces_to_use:
+            moves.append({"position":pos , "piece":piece})
+    return moves
 
 
 def random_move(game_board, piece):
@@ -173,5 +177,5 @@ if __name__ == "__main__":
 
   # python server.py quarto
   # python IA_creation_Kenza.py
-  #python player_adversary.py
+  # python player_adversary.py
   # python -m pip install -r requirements.txt
