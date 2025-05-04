@@ -122,6 +122,7 @@ def timeit(fun):
             return res
     return wrapper
 
+@timeit
 def Quarto_state(players):
     state = {"players": players, "current": 0, "board": [None] * 16, "piece": None}
 
@@ -151,6 +152,49 @@ def apply(state, move):
     res=list(state)
     res[move]=player
     return res
+
+lines = [[0, 1, 2, 3],[4, 5, 6, 7],[8, 9, 10, 11],[12, 13, 14, 15],                         #toutes les lignes possibles pour gagner la partie
+         [0, 4, 8, 12],[1, 5, 9, 13],[2, 6, 10, 14],[3, 7, 11, 15],
+         [0, 5, 10, 15],[3, 6, 9, 12]]
+
+def lineValue(line, player,state):
+    '''on implémente ici la logique pour faire un bon coup
+       voir les caractéristiques communes des pièces placées sur le plateaux et leurs position pour voir si on peut en aligner 4 communes'''
+    pieces=[state[i] for i in line if state[i] is not None]                                #on prends un liste avec toutes les pièces sur le plateaux pour chaque ligne
+    if len(pieces)<4:                                                                      #la ligne de 4 n'est pas complète
+        return 0
+    # shared_characteristics=set(pieces[0])                                                  #on prend
+    return 
+
+
+def heuristic(state, player):
+	if gameOver(state):
+		theWinner = winner(state)
+		if theWinner is None:
+			return 0
+		if theWinner == player:
+			return 9
+		return -9
+	res = 0
+	for line in lines:
+		res += lineValue([state[i] for i in line], player)
+	return res
+	
+def negamaxWithPruningLimitedDepth(state, player, depth=4, alpha=float('-inf'), beta=float('inf')):
+	if gameOver(state) or depth == 0:
+		return -heuristic(state, player), None
+
+	theValue, theMove = float('-inf'), None
+	for move in moves(state):
+		successor = apply(state, move)
+		value, _ = negamaxWithPruningLimitedDepth(successor, player%2+1, depth-1, -beta, -alpha)
+		if value > theValue:
+			theValue, theMove = value, move
+		alpha = max(alpha, theValue)
+		if alpha >= beta:
+			break
+	return -theValue, theMove
+         
 
 if __name__ == "__main__":
   socket_inscription = socket.socket() #TCP
