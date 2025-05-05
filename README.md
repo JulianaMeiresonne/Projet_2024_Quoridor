@@ -19,6 +19,10 @@ Vous devez réaliser une intelligence artificielle pour le jeu Quoridor. Votre I
 
 -random
 
+-copy
+
+-time
+
 -pytest
 
 
