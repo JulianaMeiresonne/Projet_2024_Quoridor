@@ -122,30 +122,6 @@ def timeit(fun):
             return res
     return wrapper
 
-def MAX(state, player):
-	if gameOver(state):
-		return utility(state, player), None
-
-	theValue, theMove = float('-inf'), None
-	for move in moves(state):
-		successor = apply(state, move)
-		value, _ = MIN(successor, player)
-		if value > theValue:
-			theValue, theMove = value, move
-	return theValue, theMove
-
-def MIN(state, player):
-	if gameOver(state):
-		return utility(state, player), None
-
-	theValue, theMove = float('inf'), None
-	for move in moves(state):
-		successor = apply(state, move)
-		value, _ = MAX(successor, player)
-		if value < theValue:
-			theValue, theMove = value, move
-	return theValue, theMove
-
 @timeit
 def Quarto_state(players):
     state = {"players": players, "current": 0, "board": [None] * 16, "piece": None}
@@ -200,7 +176,7 @@ def heuristic(state, player):
 		res += lineValue([state[i] for i in line], player)
 	return res
 	
-def negamaxWithPruningLimitedDepth(state, player, depth=4, alpha=float('-inf'), beta=float('inf')):
+def negamaxWithPruningLimitedDepth(state, player, depth=4, alpha=float('-inf'), beta=float('inf')):                             #c'est la fonction ''finale de l'IA'' qui nous donne le move
 	if gameOver(state) or depth == 0:
 		return -heuristic(state, player), None
 
