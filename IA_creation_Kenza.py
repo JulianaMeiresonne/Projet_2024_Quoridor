@@ -58,9 +58,17 @@ def winner(board):                                                  #définition
         return True
     return same(getDiagonal(board, -1))
 
+def isFull(board):
+    for elem in board:
+        if elem is None:
+            return False
+    return True
+
 def gameOver(state):                                                #cette fonction permet de dire à l'IA quand elle doit cesser de réfléchir ou de jouer
-	if winner(state) is not None:
-		return True
+     if winner(state) is not None:
+          return True
+     elif isFull(state) is True:
+          return True
     
 def utility(state, player):                                         #permet d'avoir un état de succés pour l'IA
 	theWinner = winner(state)
@@ -156,12 +164,18 @@ lines = [[0, 1, 2, 3],[4, 5, 6, 7],[8, 9, 10, 11],[12, 13, 14, 15],             
 def lineValue(line, player,state):
     '''on implémente ici la logique pour faire un bon coup
        voir les caractéristiques communes des pièces placées sur le plateaux et leurs position pour voir si on peut en aligner 4 communes'''
-    pieces=[state[i] for i in line if state[i] is not None]                                #on prends un liste avec toutes les pièces sur le plateaux pour chaque ligne
-    if len(pieces)<4:                                                                      #la ligne de 4 n'est pas complète
-        return 0
-    
-    return
-
+    # pieces=[state[i] for i in line if state[i] is not None]                                #on prends un liste avec toutes les pièces sur le plateaux pour chaque ligne
+    # if len(pieces)<4:                                                                      #la ligne de 4 n'est pas complète
+    #     return 0
+    # return
+    counters = {1: 0,2: 0,None: 0}
+    for elem in line:
+         counters[elem] +=1
+    if counters[player] > counters[player%2+1]:
+        return 1
+    if counters[player] == counters[player%2+1]:
+         return 0
+    return -1
 
 def heuristic(state, player):
 	if gameOver(state):
@@ -175,7 +189,7 @@ def heuristic(state, player):
 	for line in lines:
 		res += lineValue([state[i] for i in line], player)
 	return res
-	
+
 def negamaxWithPruningLimitedDepth(state, player, depth=4, alpha=float('-inf'), beta=float('inf')):                             #c'est la fonction ''finale de l'IA'' qui nous donne le move
 	if gameOver(state) or depth == 0:
 		return -heuristic(state, player), None
@@ -220,7 +234,7 @@ if __name__ == "__main__":
         message_pong = {"response": "pong"}
         client.send(json.dumps(message_pong).encode())
       elif message_receive_ping["request"] == "play": 
-        move = random_move(message_receive_ping["state"]["board"],message_receive_ping["state"]["piece"])
+        move = negamaxWithPruningLimitedDepth(message_receive_ping["state"]["board"],message_receive_ping["state"]["piece"])
         move_sent = { "response": "move","move": move,"message": "Fun message"}
         client.send(json.dumps(move_sent).encode())
 
