@@ -150,6 +150,10 @@ def MIN(state, player):
 def Quarto_state(players):
     state = {"players": players, "current": 0, "board": [None] * 16, "piece": None}
 
+def currentPlayer(state):                                   #permet de savoir qui joue
+    return state["players"][state["current"]]
+
+def apply(state, move):
     def next(state, move):
         newState = copy.deepcopy(state)
 
@@ -168,14 +172,6 @@ def Quarto_state(players):
         return newState
     return state, next
 
-def currentPlayer(state):                                   #permet de savoir qui joue
-    return state["players"][state["current"]]
-
-def apply(state, move):
-    player=currentPlayer(state)
-    res=list(state)
-    res[move]=player
-    return res
 
 lines = [[0, 1, 2, 3],[4, 5, 6, 7],[8, 9, 10, 11],[12, 13, 14, 15],                         #toutes les lignes possibles pour gagner la partie
          [0, 4, 8, 12],[1, 5, 9, 13],[2, 6, 10, 14],[3, 7, 11, 15],
@@ -187,8 +183,8 @@ def lineValue(line, player,state):
     pieces=[state[i] for i in line if state[i] is not None]                                #on prends un liste avec toutes les pièces sur le plateaux pour chaque ligne
     if len(pieces)<4:                                                                      #la ligne de 4 n'est pas complète
         return 0
-    # shared_characteristics=set(pieces[0])                                                  #on prend
-    return 
+    
+    return
 
 
 def heuristic(state, player):
