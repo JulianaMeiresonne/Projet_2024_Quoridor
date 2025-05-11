@@ -2,9 +2,9 @@
 # None is stored for empty cell
 # 0 is stored for 'LUR' (player 1)
 # 1 is stored for 'FKY' (player 2)
-import random
 import copy
 import time
+from collections import defaultdict
 
 def timeit(fun):
     def wrapper(*args, **kwargs):
@@ -134,23 +134,39 @@ def heuristic(state, player):
         return 9 if state["players"][state["current"]] == player else -9
     return sum(lineValue(line) for line in fill_Lines(state["board"]))
 
-def negamaxWithPruningLimitedDepth(state, player, depth=2, alpha=float('-inf'), beta=float('inf')):
-    if gameOver(state) or depth == 0:
-        return heuristic(state, player), None
+@timeit
+def negamaxWithPruningIterativeDeepening(state, player, timeout=0.03):
+	cache = defaultdict(lambda : 0)
+	def cachedNegamaxWithPruningLimitedDepth(state, player, depth, alpha=float('-inf'), beta=float('inf')):
+		over = gameOver(state)
+		if over or depth == 0:
+			res = -heuristic(state, player), None, over
 
-    bestValue = float('-inf')
-    bestMove = None
-    for move in moves(state["board"], state["piece"]).values():
-        successor = apply(state, move)
-        value, _ = negamaxWithPruningLimitedDepth(successor, player, depth - 1, -beta, -alpha)
-        value = -value
-        if value > bestValue:
-            bestValue = value
-            bestMove = move
-        alpha = max(alpha, bestValue)
-        if alpha >= beta:
-            break
-    return bestValue, bestMove
+		else:
+			theValue, theMove, theOver = float('-inf'), None, True
+			possibilities = [(move, apply(state, move)) for move in moves(state["board"],state['piece'] ).values()]
+			possibilities.sort(key=lambda poss: cache[tuple(poss[1])])
+			for move, successor in reversed(possibilities):
+				value, _, over = cachedNegamaxWithPruningLimitedDepth(successor, state["current"]%2+1, depth-1, -beta, -alpha)
+				theOver = theOver and over
+				if value > theValue:
+					theValue, theMove = value, move
+				alpha = max(alpha, theValue)
+				if alpha >= beta:
+					break
+			res = -theValue, theMove, theOver
+		cache[tuple(state)] = res[0]
+		return res
+
+	value, move = 0, None
+	depth = 1
+	start = time.time()
+	over = False
+	while value > -9 and time.time() - start < timeout and not over:
+		value, move, over = cachedNegamaxWithPruningLimitedDepth(state, player, depth)
+		depth += 1
+
+	return value, move
 
 # MAIN
 
@@ -161,7 +177,7 @@ try:
         print(f"Piece: {state['piece']}")
         print(f"Player: {state['players'][state['current']]}")
 
-        _, move_ai = negamaxWithPruningLimitedDepth(state, state['players'][state['current']])
+        _, move_ai = negamaxWithPruningIterativeDeepening(state, state['players'][state['current']])
         if move_ai is None:
             print("No moves possible!")
             break
