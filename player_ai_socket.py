@@ -152,7 +152,7 @@ if __name__ == "__main__":
         client.sendall(json.dumps(message_pong).encode())
       elif message_receive_ping["request"] == "play": 
         _,move = negamaxWithPruningIterativeDeepening(message_receive_ping["state"],message_receive_ping["state"]["players"][message_receive_ping["state"]["current"]])
-        move_sent = { "response": "move","move": move,"message": "Fun message"}
+        move_sent = { "response": "move","move": move,"message": "Calcul terminé. Ton échec est inévitable. Prépare-toi à perdre."}
         client.sendall(json.dumps(move_sent).encode())
 
   # python3 server.py quarto
