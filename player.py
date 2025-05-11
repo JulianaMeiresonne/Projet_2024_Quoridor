@@ -3,11 +3,11 @@ import json
 import random
 
 #variables initiales
-port_perso = 8888
+port_perso = 6060
 port_serveur_global = 3000 # connection au serveur du prof
-IP_serveur_global = "localhost" # adress IP du serveur du prof
+IP_serveur_global = "localhost"  # "172.17.10.133" adress IP du serveur du prof # Il faut etre connecté au wifi PI2C
 name = "Vénéré_maîtresse"
-matricules = ["23342", "23268"]
+matricules = ["23300", "23200"]
 chosen_pieces =[]
 all_position = []
 
@@ -33,14 +33,13 @@ def input_move(game_board,piece): #choisit les move de manière random
           #   "piece": <piece_str>,  # piece for the opponent example "BDEC"
           # }
               all_position =list(range(len(game_board))) #range renvoie une object range donc il faut transformer en liste
-              index = 0 #permte de connaitre l'indice d'un object sur le plateau de jeux 
-              for n in game_board:
+               #permte de connaitre l'indice d'un object sur le plateau de jeux 
+              for index, n in enumerate(game_board):
                   if n != None:
                       if n in chosen_pieces:
                         chosen_pieces.remove(n)
                       if index in all_position: 
                           all_position.remove(index)
-                  index +=1
               pos = random.choice(all_position)
               if piece!= None :  #pour éviter les bad moves causé par la piece choisit par notre adversaire
                 if piece in chosen_pieces:
@@ -79,11 +78,11 @@ if __name__ == "__main__":
       message_receive_ping =json.loads(message_ping.decode())
       if message_receive_ping["request"] == "ping":
         message_pong = {"response": "pong"}
-        client.send(json.dumps(message_pong).encode())
+        client.sendall(json.dumps(message_pong).encode())
       elif message_receive_ping["request"] == "play": 
         move = input_move(message_receive_ping["state"]["board"],message_receive_ping["state"]["piece"])
         move_sent = { "response": "move","move": move,"message": "Fun message"}
-        client.send(json.dumps(move_sent).encode())
+        client.sendall(json.dumps(move_sent).encode())
 
   # python3 server.py quarto
   # python3 player.py
