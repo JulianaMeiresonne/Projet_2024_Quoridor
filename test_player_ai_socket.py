@@ -98,5 +98,27 @@ def test_apply():
     assert result["piece"]=="BSCP"
     assert result["current"]==1
 
+def test_fill_Lines():
+    board=["BDEC", "BDEP", "BLEC", "BSCP",
+            "SDEC", "SDEP", "SLEC", "SSCP",
+            "BCEF", "BCEP", "BLEF", "BSCP",
+            "SCEF", "SCEP", "SLEF", "SSCP" ]
+    
+    resultat=player_ai_socket.fill_Lines(board)
+
+    assert resultat[0]==["BDEC","SDEP","BLEF","SSCP"]
+    assert resultat[1]==["BSCP","SLEC","BCEP","SCEF"]
+    assert resultat[2]==["BDEC", "BDEP", "BLEC", "BSCP"]
+    assert resultat[3]==["BDEC","SDEC","BCEF","SCEF"]
+    assert resultat[4]==["SDEC", "SDEP", "SLEC", "SSCP"]
+    assert resultat[5]==["BDEP","SDEP","BCEP","SCEP"]
+    assert resultat[6]==["BCEF", "BCEP", "BLEF", "BSCP"]
+    assert resultat[7]==["BLEC","SLEC","BLEF","SLEF"]
+    assert resultat[8]==["SCEF", "SCEP", "SLEF", "SSCP"]
+    assert resultat[9]==["BSCP","SSCP","BSCP","SSCP"]
+
+# def test_lineValue():
+     
+
 # coverage run -m pytest test_player_ai_socket.py 
 # coverage report -m
