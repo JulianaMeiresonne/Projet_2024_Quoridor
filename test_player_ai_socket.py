@@ -50,6 +50,11 @@ def test_isWinning():
         player_ai_socket.isWinning(board1)==True
         player_ai_socket.isWinning(board2)==True
         player_ai_socket.isWinning(board3)==True
+
+def test_isFull():
+        board=["BDEC", "BDEP", "BLEC", "BSCP","SDEC", "SDEP", "SLEC", "SSCP","BCEF", "BCEP", "BLEF", "BSCP","SCEF", "SCEP", "SLEF", "SSCP"]
+        assert player_ai_socket.isFull(board)==True
+
 def test_gameOver():
         state={"board":["BDEC","BDEP","BLEC","BSCP",None,None,None,None,None,None,None,None,None,None,None,None]}
         state_1={"board":["BDEC",None,None,None,"BDEP",None,None,None,"BLEC",None,None,None,"BSCP",None,None,None]}
@@ -61,14 +66,37 @@ def test_gameOver():
         assert player_ai_socket.gameOver(state_3) == True
 
 def test_moves():
-    game_board={(0, 0): "BDEC",(0, 1): None,(0,2):None,(0,3):None,
+    game_board_1={(0, 0): "BDEC",(0, 1): None,(0,2):None,(0,3):None,
                 (1, 0): None, (1, 1): None,(1,2):None,(1,3):None,
                 (2, 0): "BDEP",(2, 1): None,(2,2):None,(2,3):None,
                 (3, 0): "BLEC",(3, 1): None,(3,2):None,(3,3):None
                 }
+    game_board_2=["BDEC", "BDEP", "BLEC", "BSCP","SDEC", "SDEP", "SLEC", "SSCP","BCEF", "BCEP", "BLEF", "BSCP","SCEF", "SCEP", "SLEF", "SSCP"]
+
     piece = "BSCP"
-    result = player_ai_socket.moves(game_board, piece)
-    used_pieces = [p for p in game_board if p is not None]
-    for move in result.values():
+    result_1 = player_ai_socket.moves(game_board_1, piece)
+    result_2 = player_ai_socket.moves(game_board_1, piece)
+    used_pieces = [p for p in game_board_1 if p is not None]
+    for move in result_1.values():
         assert move["piece"] != piece
         assert piece not in used_pieces
+    for move in result_2.values():
+         assert len(result_2)==0
+
+def test_apply():
+    state={
+          "board":[None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None],
+          "piece":"BDEC",
+          "current": 0
+     }
+    move={
+         "pos":0,
+         "piece":"BSCP"
+    }
+    result = player_ai_socket.apply(state, move)
+    assert result["board"][0]=="BDEC"
+    assert result["piece"]=="BSCP"
+    assert result["current"]==1
+
+# coverage run -m pytest test_player_ai_socket.py 
+# coverage report -m
