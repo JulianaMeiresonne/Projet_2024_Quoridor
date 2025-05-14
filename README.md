@@ -23,6 +23,8 @@ Nous avons utilisé les codes du cours théorique 6 pour l'algorithme Minimax et
 
 -time
 
+-collections
+
 -pytest
 
 
