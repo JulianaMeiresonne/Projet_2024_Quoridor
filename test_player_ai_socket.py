@@ -117,8 +117,43 @@ def test_fill_Lines():
     assert resultat[8]==["SCEF", "SCEP", "SLEF", "SSCP"]
     assert resultat[9]==["BSCP","SSCP","BSCP","SSCP"]
 
-# def test_lineValue():
-     
+def test_lineValue():
+    line_1=["BDEC","BDEP","BLEC",None]
+    resultat_1=player_ai_socket.lineValue(line_1)
+    assert resultat_1==0
+    line_2=["BDEC", "BDEP", "BLEC", "BSCP"]
+    resultat_2=player_ai_socket.lineValue(line_2)
+    assert resultat_2==1
+
+def test_heuristic():
+    player="joueur_x"
+    state_1={"board":["BDEC","BDEP","BLEC","BSCP",None,None,None,None,None,None,None,None,None,None,None,None],
+           "players":["joueur_x","joueur_y"],
+           "current":0
+           }
+    assert player_ai_socket.heuristic(state_1, player) == 9
+    state_2={"board":["BDEC","BDEP","BLEC","BSCP",None,None,None,None,None,None,None,None,None,None,None,None],
+           "players":["joueur_x","joueur_y"],
+           "current":1
+           }
+    assert player_ai_socket.heuristic(state_2, player) == -9
+    state_3={"board":[None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None],
+           "players":["joueur_x","joueur_y"],
+           "current":0
+           }
+    assert player_ai_socket.heuristic(state_3, player)== 0
+
+def test_negamaxWithPruningIterativeDeepening():
+    player="joueur_x"
+    state_1={"board":[None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None],
+           "players":["joueur_x","joueur_y"],
+           "current":0,
+           "piece":"BDEC"
+           }
+    value, move = player_ai_socket.negamaxWithPruningIterativeDeepening(state_1, player)
+    assert move is not None
+    assert value == 0
+
 
 # coverage run -m pytest test_player_ai_socket.py 
 # coverage report -m
