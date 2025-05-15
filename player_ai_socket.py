@@ -7,7 +7,7 @@ from collections import defaultdict
 #variables initiales
 port_perso = 6000
 port_serveur_global = 3000 # connection au serveur du prof
-IP_serveur_global = "localhost" 
+IP_serveur_global = "172.17.10.48" 
 name = "Vénéré_maîtresse"
 matricules = ["23342", "23268"]
 
@@ -145,7 +145,7 @@ if __name__ == "__main__":
     socket_serveur_local.listen()
     client, address = socket_serveur_local.accept() #client : la méthode accept(), Renvoie un tuple avec un socket client et l’adresse de ce dernier, ce socket client est celui qui doit être utiliser pour communiquer (envoyer et recevoir info) car il reste constament connecter au client donc pas de [Errno 32] Broken pipe
     with client:
-      message_ping = client.recv(1024)
+      message_ping = client.recv(2048) # c'est mieux de faire une boucle de reception
       message_receive_ping =json.loads(message_ping.decode())
       if message_receive_ping["request"] == "ping":
         message_pong = {"response": "pong"}
@@ -153,7 +153,7 @@ if __name__ == "__main__":
       elif message_receive_ping["request"] == "play": 
         _,move = negamaxWithPruningIterativeDeepening(message_receive_ping["state"],message_receive_ping["state"]["players"][message_receive_ping["state"]["current"]])
         move_sent = { "response": "move","move": move,"message": "Calcul terminé. Ton échec est inévitable. Prépare-toi à perdre."}
-        client.sendall(json.dumps(move_sent).encode())
+        client.sendall(json.dumps(move_sent).encode()) # c'est mieux de faire une boucle d'envoie
 
   # python3 server.py quarto
   # python3 player_ai_socket.py
