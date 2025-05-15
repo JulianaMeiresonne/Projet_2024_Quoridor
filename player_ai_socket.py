@@ -8,7 +8,7 @@ from collections import defaultdict
 port_perso = 6000
 port_serveur_global = 3000 # connection au serveur du prof
 IP_serveur_global = "localhost" 
-name = "player_ai"
+name = "Vénéré_maîtresse"
 matricules = ["23342", "23268"]
 
 def timeit(fun):
